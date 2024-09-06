@@ -84,3 +84,29 @@ Dans le fichier `src/Controller/MyController.php`
 
 ```
     
+### Création d'un environnement sécurisé
+
+Copie de `.env` vers `.env.local`
+
+    cp .env .env.local
+
+Il faut changer la clé dans `.env.local`, et choisir une base de donnée (ici, on choisira `MySQL`)
+
+```.env
+    # choix prod -> production, test -> test, dev -> développement
+APP_ENV=dev
+APP_SECRET=uneclefsecrète
+
+    # changement des lignes ci-dessous
+
+# DATABASE_URL="mysql://app:!ChangeMe!@127.0.0.1:3306/app?serverVersion=8.0.32&charset=utf8mb4"
+# DATABASE_URL="mysql://app:!ChangeMe!@127.0.0.1:3306/app?serverVersion=10.11.2-MariaDB&charset=utf8mb4"
+DATABASE_URL="postgresql://app:!ChangeMe!@127.0.0.1:5432/app?serverVersion=16&charset=utf8"
+
+    # Par
+
+DATABASE_URL="mysql://root:@127.0.0.1:3306/secondcrudg2?serverVersion=8.0.31&charset=utf8mb4"
+# DATABASE_URL="mysql://app:!ChangeMe!@127.0.0.1:3306/app?serverVersion=10.11.2-MariaDB&charset=utf8mb4"
+# DATABASE_URL="postgresql://app:!ChangeMe!@127.0.0.1:5432/app?serverVersion=16&charset=utf8"
+
+```
