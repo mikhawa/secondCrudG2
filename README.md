@@ -117,4 +117,226 @@ Symfony va chercher le chemin depuis `.env.local`
 
     php bin/console doctrine:database:create
 
+
+### On va créer une entité
+
+    php bin/console make:entity Article
+
+        created: src/Entity/Article.php
+        created: src/Repository/ArticleRepository.php
+
+On va remplir les champs dans la console
+
+```bash
+New property name (press <return> to stop adding fields):
+ > title
+
+ Field type (enter ? to see all types) [string]:
+ > string
+string
+
+ Field length [255]:
+ > 160
+
+ Can this field be null in the database (nullable) (yes/no) [no]:
+ > no
+
+ updated: src/Entity/Article.php
+
+ Add another property? Enter the property name (or press <return> to stop adding fields):
+ > description
+
+ Field type (enter ? to see all types) [string]:
+ > text
+text
+
+ Can this field be null in the database (nullable) (yes/no) [no]:
+ > no
+
+ updated: src/Entity/Article.php
+
+ Add another property? Enter the property name (or press <return> to stop adding fields):
+ > dateCreated
+
+ Field type (enter ? to see all types) [string]:
+ > datetime
+datetime
+
+ Can this field be null in the database (nullable) (yes/no) [no]:
+ > no
+
+ updated: src/Entity/Article.php
+
+ Add another property? Enter the property name (or press <return> to stop adding fields):
+ > published
+
+ Field type (enter ? to see all types) [string]:
+ > boolean
+boolean
+
+ Can this field be null in the database (nullable) (yes/no) [no]:
+ > no
+
+ updated: src/Entity/Article.php
+
+ Add another property? Enter the property name (or press <return> to stop adding fields):
+ >
+
+  Success!
+
+ Next: When you're ready, create a migration with php bin/console make:migration
+```
+
+On peut aller voir le fichier `src/Entity/Article.php`
+
+Nous allons effectuer des modifications dans celui-ci pour l'adapter à MySQL 8.*
+
+Documentation : https://www.doctrine-project.org/projects/doctrine-orm/en/3.2/reference/attributes-reference.html#attrref_column
+
+
+```php
+<?php
+
+// src/Entity/Article.php
+
+namespace App\Entity;
+
+use App\Repository\ArticleRepository;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(repositoryClass: ArticleRepository::class)]
+class Article
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(
+        # on met l'id en unsigned
+        options:
+            [
+                'unsigned' => true,
+            ]
+    )]
+    private ?int $id = null;
+
+    #[ORM\Column(length: 160)]
+    private ?string $title = null;
+
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $description = null;
+
+    #[ORM\Column(
+        type: Types::DATETIME_MUTABLE,
+        # on passe la valeur par défaut en CURRENT_TIMESTAMP
+        options: [
+            'default' => 'CURRENT_TIMESTAMP',
+        ]
+    )]
+    private ?\DateTimeInterface $dateCreated = null;
+
+    #[ORM\Column(
+        options:
+        # si aucun boolean n'est envoyé, la valeur par défaut est fausse
+            [
+                'default' => false,
+            ]
+    )]
+    private ?bool $published = null;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): static
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getDateCreated(): ?\DateTimeInterface
+    {
+        return $this->dateCreated;
+    }
+
+    public function setDateCreated(?\DateTimeInterface $dateCreated): static
+    {
+        $this->dateCreated = $dateCreated;
+
+        return $this;
+    }
+
+    public function isPublished(): ?bool
+    {
+        return $this->published;
+    }
+
+    public function setPublished(?bool $published): static
+    {
+        $this->published = $published;
+
+        return $this;
+    }
+}
+
+```
+
+## Migration
+
+    php bin/console make:migration
     
+    created: migrations/Version20240906093756.php
+
+Si ça a fonctionné, vérifiez le fichier dans le dossier `migrations`, la requête `SQL`devrait correspondre à vos attentes.
+
+Pour effectuer la migration :
+
+    php bin/console d:m:m
+    php bin/console doctrine:migrations:migrate
+
+Attention cette étape pourrait effacer des données (en dev uniquement)
+
+## Création du CRUD de `Article`
+
+    php bin/console make:crud Article
+
+```bash
+ Choose a name for your controller class (e.g. ArticleController) [ArticleController]:
+ > AdminArticleCrud
+
+ Do you want to generate PHPUnit tests? [Experimental] (yes/no) [no]:
+ > yes
+
+ created: src/Controller/AdminArticleCrudController.php
+ created: src/Form/ArticleType.php
+ created: templates/admin_article_crud/_delete_form.html.twig
+ created: templates/admin_article_crud/_form.html.twig
+ created: templates/admin_article_crud/edit.html.twig
+ created: templates/admin_article_crud/index.html.twig
+ created: templates/admin_article_crud/new.html.twig
+ created: templates/admin_article_crud/show.html.twig
+ created: tests/Controller/ArticleControllerTest.php
+
+  Success!
+
+ Next: Check your new CRUD by going to /admin/article/crud/
+
+```
