@@ -110,3 +110,11 @@ DATABASE_URL="mysql://root:@127.0.0.1:3306/secondcrudg2?serverVersion=8.0.31&cha
 # DATABASE_URL="postgresql://app:!ChangeMe!@127.0.0.1:5432/app?serverVersion=16&charset=utf8"
 
 ```
+
+### On va créer la database via `Doctrine`
+
+Symfony va chercher le chemin depuis `.env.local`
+
+    php bin/console doctrine:database:create
+
+    
