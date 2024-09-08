@@ -383,8 +383,11 @@ Puis le menu
 </nav>
 ```
 
+https://symfony.com/doc/6.4/frontend/asset_mapper.html
+
 php bin/console debug:asset-map --full
 
+php bin/console importmap:require bootstrap
 
 https://www.npmjs.com/package/es-module-shims
 
