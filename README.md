@@ -382,3 +382,9 @@ Puis le menu
     <a href="{{ path('app_admin_article_crud_index') }}">Crud des articles</a>
 </nav>
 ```
+
+php bin/console debug:asset-map --full
+
+
+https://www.npmjs.com/package/es-module-shims
+
