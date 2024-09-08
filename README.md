@@ -383,9 +383,24 @@ Puis le menu
 </nav>
 ```
 
+### Création d'un autre formulaire
+
+
+! mettre à `nullable: true,`
+les champs qui ne sont pas obligatoires `$dateCreated et $published`
+
+Puis, refaire la migration
+
+    php bin/console make:migration
+    php bin/console doctrine:migrations:migrate
+
+
 https://symfony.com/doc/6.4/frontend/asset_mapper.html
 
 php bin/console debug:asset-map --full
+
+https://symfony.com/doc/current/form/form_themes.html
+https://symfony.com/doc/current/form/bootstrap5.html
 
 php bin/console importmap:require bootstrap
 
